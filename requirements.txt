@@ -1,0 +1,14 @@
+# LiveKit Agents and plugins
+livekit-agents[groq,silero,turn-detector]~=1.2
+livekit-plugins-noise-cancellation~=0.2
+
+# Python utilities
+python-dotenv
+
+# ML dependencies
+torch>=2.8.0
+
+# Development dependencies (optional, for testing)
+pytest
+pytest-asyncio
+ruff

@@ -1,0 +1,260 @@
+{
+  "general_info": {
+    "name": "Sunrise Care Home",
+    "address": "123 Maple Street, Springfield",
+    "phone": "(555) 123-4567",
+    "emergency": "911 or Press Call Button"
+  },
+  "dining": {
+    "location": "Main Dining Room (1st Floor)",
+    "schedule": {
+      "breakfast": "7:30 AM - 9:00 AM",
+      "lunch": "12:00 PM - 1:30 PM",
+      "dinner": "5:30 PM - 7:00 PM"
+    },
+    "special_diet": true,
+    "notes": "Room service available for those unable to come to dining room"
+  },
+  "visiting_hours": {
+    "general": "Daily 9:00 AM - 8:00 PM",
+    "family": "Family members welcome anytime with prior arrangement",
+    "notes": "Please check in at front desk"
+  },
+  "activities": {
+    "daily_schedule": {
+      "Monday": [
+        {
+          "time": "10:00 AM",
+          "name": "Chair Yoga",
+          "location": "Activity Room"
+        },
+        {
+          "time": "2:00 PM",
+          "name": "Bingo",
+          "location": "Common Room"
+        },
+        {
+          "time": "3:30 PM",
+          "name": "Music Hour",
+          "location": "Lounge"
+        }
+      ],
+      "Tuesday": [
+        {
+          "time": "10:00 AM",
+          "name": "Arts & Crafts",
+          "location": "Activity Room"
+        },
+        {
+          "time": "2:00 PM",
+          "name": "Book Club",
+          "location": "Library"
+        },
+        {
+          "time": "4:00 PM",
+          "name": "Movie Matinee",
+          "location": "Theater Room"
+        }
+      ],
+      "Wednesday": [
+        {
+          "time": "10:00 AM",
+          "name": "Gentle Exercise",
+          "location": "Activity Room"
+        },
+        {
+          "time": "2:00 PM",
+          "name": "Card Games",
+          "location": "Common Room"
+        },
+        {
+          "time": "3:00 PM",
+          "name": "Garden Club",
+          "location": "Garden (weather permitting)"
+        }
+      ],
+      "Thursday": [
+        {
+          "time": "10:00 AM",
+          "name": "Memory Games",
+          "location": "Activity Room"
+        },
+        {
+          "time": "2:00 PM",
+          "name": "Live Music Performance",
+          "location": "Lounge"
+        },
+        {
+          "time": "3:30 PM",
+          "name": "Tea Social",
+          "location": "Dining Room"
+        }
+      ],
+      "Friday": [
+        {
+          "time": "10:00 AM",
+          "name": "Painting Class",
+          "location": "Activity Room"
+        },
+        {
+          "time": "2:00 PM",
+          "name": "Trivia Game",
+          "location": "Common Room"
+        },
+        {
+          "time": "6:00 PM",
+          "name": "Friday Night Social",
+          "location": "Lounge"
+        }
+      ],
+      "Saturday": [
+        {
+          "time": "10:00 AM",
+          "name": "Gardening",
+          "location": "Garden"
+        },
+        {
+          "time": "2:00 PM",
+          "name": "Classic Film Showing",
+          "location": "Theater Room"
+        }
+      ],
+      "Sunday": [
+        {
+          "time": "9:00 AM",
+          "name": "Chapel Service",
+          "location": "Chapel"
+        },
+        {
+          "time": "2:00 PM",
+          "name": "Family Visiting Hours",
+          "location": "Common Areas"
+        },
+        {
+          "time": "3:00 PM",
+          "name": "Live Piano Music",
+          "location": "Lounge"
+        }
+      ]
+    }
+  },
+  "locations": {
+    "Dining Room": {
+      "floor": "1st Floor",
+      "directions": "Take the main hallway and turn left at the nurses station. It's the large room with windows overlooking the garden."
+    },
+    "Library": {
+      "floor": "1st Floor",
+      "directions": "Next to the main entrance, across from the reception desk."
+    },
+    "Chapel": {
+      "floor": "1st Floor",
+      "directions": "At the end of the East Wing, past the activity room."
+    },
+    "Activity Room": {
+      "floor": "1st Floor",
+      "directions": "In the center of the building, near the nurses station."
+    },
+    "Common Room": {
+      "floor": "1st Floor",
+      "directions": "Next to the dining room, with comfortable seating and a TV."
+    },
+    "Garden": {
+      "floor": "Ground Level",
+      "directions": "Exit through the French doors in the dining room or the side door near the chapel."
+    },
+    "Theater Room": {
+      "floor": "2nd Floor",
+      "directions": "Take the elevator to the 2nd floor, turn right, last door on the left."
+    },
+    "Lounge": {
+      "floor": "1st Floor",
+      "directions": "Near the main entrance, has a piano and cozy seating areas."
+    },
+    "Nurses Station": {
+      "floor": "1st Floor (Main), Each Floor",
+      "directions": "The main nurses station is in the center of the 1st floor. Each residential floor also has a nurses station."
+    }
+  },
+  "staff": {
+    "day_shift": [
+      {
+        "name": "Nurse Sarah Johnson",
+        "role": "Head Nurse",
+        "specialization": "Geriatric Care"
+      },
+      {
+        "name": "Caregiver Maria Rodriguez",
+        "role": "Senior Caregiver",
+        "specialization": "Personal Care"
+      },
+      {
+        "name": "Caregiver James Chen",
+        "role": "Caregiver",
+        "specialization": "Activities & Mobility"
+      },
+      {
+        "name": "Dr. Patricia Williams",
+        "role": "Medical Director",
+        "availability": "Rounds 9AM-11AM, On-call"
+      }
+    ],
+    "evening_shift": [
+      {
+        "name": "Nurse Michael Davis",
+        "role": "Evening Nurse",
+        "specialization": "Medication Management"
+      },
+      {
+        "name": "Caregiver Lisa Thompson",
+        "role": "Senior Caregiver",
+        "specialization": "Personal Care"
+      },
+      {
+        "name": "Caregiver Robert Kim",
+        "role": "Caregiver",
+        "specialization": "Dining Assistance"
+      }
+    ],
+    "night_shift": [
+      {
+        "name": "Nurse Amanda Foster",
+        "role": "Night Nurse",
+        "specialization": "Emergency Response"
+      },
+      {
+        "name": "Caregiver David Martinez",
+        "role": "Night Caregiver",
+        "specialization": "Safety Rounds"
+      }
+    ]
+  },
+  "services": {
+    "medical": [
+      "24/7 Nursing Care",
+      "Medication Management",
+      "Physical Therapy (scheduled)",
+      "Occupational Therapy (scheduled)",
+      "Doctor Visits (weekly rounds + as needed)"
+    ],
+    "personal_care": [
+      "Assistance with Daily Activities",
+      "Bathing & Grooming Assistance",
+      "Dressing Assistance",
+      "Mobility Support"
+    ],
+    "amenities": [
+      "Three Nutritious Meals Daily",
+      "Laundry Service",
+      "Housekeeping",
+      "Transportation (scheduled)",
+      "Beauty Salon (appointments)",
+      "Cable TV & WiFi"
+    ]
+  },
+  "emergency_procedures": {
+    "fire": "Remain calm. Staff will assist with evacuation. Follow lit exit signs.",
+    "medical": "Press call button or call 911. Staff responds to all call buttons immediately.",
+    "severe_weather": "Proceed to designated shelter area. Staff will provide guidance."
+  }
+}

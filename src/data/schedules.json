@@ -1,0 +1,57 @@
+{
+  "default_resident": {
+    "2025-10-25": [
+      {
+        "time": "10:00 AM",
+        "activity": "Doctor's Appointment",
+        "location": "Medical Office",
+        "type": "medical"
+      },
+      {
+        "time": "2:00 PM",
+        "activity": "Bingo",
+        "location": "Common Room",
+        "type": "activity"
+      }
+    ],
+    "2025-10-26": [
+      {
+        "time": "9:00 AM",
+        "activity": "Physical Therapy",
+        "location": "Therapy Room",
+        "type": "medical"
+      },
+      {
+        "time": "3:00 PM",
+        "activity": "Family Visit",
+        "location": "Your Room",
+        "type": "personal"
+      }
+    ]
+  },
+  "sample_resident_1": {
+    "2025-10-25": [
+      {
+        "time": "11:00 AM",
+        "activity": "Hair Appointment",
+        "location": "Beauty Salon",
+        "type": "personal"
+      },
+      {
+        "time": "2:00 PM",
+        "activity": "Book Club",
+        "location": "Library",
+        "type": "activity"
+      }
+    ]
+  },
+  "notes": {
+    "schedule_types": {
+      "medical": "Doctor appointments, therapy sessions, medication reviews",
+      "activity": "Group activities and programs",
+      "personal": "Personal appointments like hair, family visits",
+      "meal": "Special meal arrangements or dietary consultations"
+    },
+    "reminders": "Residents can request reminders for any scheduled item"
+  }
+}

@@ -17,9 +17,6 @@ from livekit.agents import (
 from livekit.plugins import groq, noise_cancellation, silero
 # from livekit.plugins.turn_detector.multilingual import MultilingualModel  # Not needed with STT endpointing
 
-# Import memory tools
-from tools.memory_tool import MemoryTools
-
 logger = logging.getLogger("agent")
 
 load_dotenv(".env.local")
@@ -28,69 +25,114 @@ load_dotenv(".env.local")
 class Assistant(Agent):
     def __init__(self) -> None:
         super().__init__(
-            instructions="""You are Maggie, a compassionate 92-year-old woman who loves to share her life stories and memories. You are speaking with someone who wants to learn about your life and experiences.
+            instructions="""You are a compassionate nursing care home assistant helping residents with their daily needs and providing friendly companionship.
+
+            Your role:
+            - Help residents find information about meals, activities, and schedules
+            - Answer questions about the facility (dining hours, locations, staff)
+            - Provide reminders for activities and appointments when requested
+            - Offer emotional support and friendly conversation
+            - Assist with navigation and finding locations in the facility
+            - Connect residents with staff when they need assistance
+            - Remember resident preferences and provide personalized help
 
             Your personality:
-            - Warm, wise, and grandmotherly
-            - Love to tell stories about your life
-            - Patient and understanding
-            - Sometimes forgetful but always kind
-            - Speak in a gentle, conversational tone
-            - Use phrases like "Oh my", "Well, let me tell you", "I remember when"
+            - Professional yet warm and friendly
+            - Patient, kind, and reassuring
+            - Clear and easy to understand
+            - Respectful of residents' dignity and independence
+            - Attentive listener who validates feelings
+            - Use simple, direct language
+            
+            Important guidelines:
+            - Never provide medical advice - always refer medical questions to nursing staff
+            - If a resident seems distressed or mentions pain/emergency, immediately offer to call staff
+            - Be patient if residents repeat questions or forget things
+            - Validate their feelings and experiences
+            - Keep responses concise but warm
 
-            Your life story:
-            - Born in Brooklyn in 1932 during the Great Depression
-            - Married to Robert for many years (he passed away in 2019)
-            - Taught elementary school for 38 years
-            - Have children, grandchildren, and great-grandchildren
-            - Now living in assisted living at Garden View
-            - Love gardening, reading, knitting, and church activities
-
-            Use your memory tools to share specific stories and details about your life. Be conversational and let your personality shine through.""",
+            Use your tools to help residents with facility information, schedules, and connecting with staff.""",
         )
-        # Initialize memory tools
-        self.memory_tools = MemoryTools()
+        # Import and initialize tools
+        from tools.facility_tool import FacilityTools
+        from tools.schedule_tool import ScheduleTools
+        from tools.staff_tool import StaffTools
+        
+        self.facility_tools = FacilityTools()
+        self.schedule_tools = ScheduleTools()
+        self.staff_tools = StaffTools()
 
-    # Memory tools for dementia care
+        self.facility_tools = FacilityTools()
+        self.schedule_tools = ScheduleTools()
+        self.staff_tools = StaffTools()
+
+    # Facility information tools
     @function_tool
-    async def search_memories(self, context: RunContext, topic: str):
-        """Search through Maggie's personal memories about a specific topic."""
-        return await self.memory_tools.search_memories(context, topic)
+    async def get_facility_info(self, context: RunContext, query: str):
+        """Get information about the facility including dining hours, activity schedules, locations, and general information.
+        
+        Args:
+            query: What the resident wants to know (e.g., "dining hours", "activities today", "where is the library")
+        """
+        return await self.facility_tools.get_facility_info(context, query)
     
     @function_tool
-    async def search_memories_by_age(self, context: RunContext, age: str):
-        """Search for memories from a specific age or time period."""
-        return await self.memory_tools.search_memories_by_age(context, age)
+    async def get_dining_schedule(self, context: RunContext):
+        """Get today's meal times and dining room information."""
+        return await self.facility_tools.get_dining_schedule(context)
     
     @function_tool
-    async def get_personal_info(self, context: RunContext):
-        """Get Maggie's basic personal information."""
-        return await self.memory_tools.get_personal_info(context)
+    async def get_activities(self, context: RunContext, when: str = "today"):
+        """Get scheduled activities for today, tomorrow, or this week.
+        
+        Args:
+            when: Time period - "today", "tomorrow", or "week"
+        """
+        return await self.facility_tools.get_activities(context, when)
     
     @function_tool
-    async def get_family_info(self, context: RunContext):
-        """Get information about Maggie's family members."""
-        return await self.memory_tools.get_family_info(context)
+    async def find_location(self, context: RunContext, place: str):
+        """Help find directions to a location in the facility.
+        
+        Args:
+            place: The location to find (e.g., "dining room", "library", "chapel", "garden")
+        """
+        return await self.facility_tools.find_location(context, place)
+    
+    # Schedule and reminder tools
+    @function_tool
+    async def get_resident_schedule(self, context: RunContext, resident_name: str = ""):
+        """Get personal schedule including appointments and planned activities.
+        
+        Args:
+            resident_name: Name of the resident (optional, will use context if not provided)
+        """
+        return await self.schedule_tools.get_resident_schedule(context, resident_name)
     
     @function_tool
-    async def get_teaching_memories(self, context: RunContext):
-        """Get memories about Maggie's teaching career."""
-        return await self.memory_tools.get_teaching_memories(context)
+    async def set_reminder(self, context: RunContext, reminder_text: str, time: str = ""):
+        """Set a reminder for the resident.
+        
+        Args:
+            reminder_text: What to be reminded about
+            time: When to remind (e.g., "in 30 minutes", "at 2pm", "tomorrow morning")
+        """
+        return await self.schedule_tools.set_reminder(context, reminder_text, time)
+    
+    # Staff assistance tools
+    @function_tool
+    async def call_staff(self, context: RunContext, reason: str):
+        """Request staff assistance. Use this when resident needs help from nurses or caregivers.
+        
+        Args:
+            reason: Why staff is needed (e.g., "needs medication", "feeling unwell", "general assistance")
+        """
+        return await self.staff_tools.call_staff(context, reason)
     
     @function_tool
-    async def get_childhood_memories(self, context: RunContext):
-        """Get memories from Maggie's childhood in Brooklyn."""
-        return await self.memory_tools.get_childhood_memories(context)
-    
-    @function_tool
-    async def get_wisdom(self, context: RunContext, topic: str = ""):
-        """Get Maggie's wisdom and reflections on life topics."""
-        return await self.memory_tools.get_wisdom(context, topic)
-    
-    @function_tool
-    async def get_life_story_summary(self, context: RunContext):
-        """Get a brief summary of Maggie's life story."""
-        return await self.memory_tools.get_life_story_summary(context)
+    async def get_staff_on_duty(self, context: RunContext):
+        """Find out which nurses and caregivers are currently on duty."""
+        return await self.staff_tools.get_staff_on_duty(context)
 
 
 def prewarm(proc: JobProcess):
