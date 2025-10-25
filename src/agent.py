@@ -11,9 +11,14 @@ from livekit.agents import (
     WorkerOptions,
     cli,
     metrics,
+    function_tool,
+    RunContext,
 )
-from livekit.plugins import noise_cancellation, silero
-from livekit.plugins.turn_detector.multilingual import MultilingualModel
+from livekit.plugins import groq, noise_cancellation, silero
+# from livekit.plugins.turn_detector.multilingual import MultilingualModel  # Not needed with STT endpointing
+
+# Import memory tools
+from tools.memory_tool import MemoryTools
 
 logger = logging.getLogger("agent")
 
@@ -23,28 +28,69 @@ load_dotenv(".env.local")
 class Assistant(Agent):
     def __init__(self) -> None:
         super().__init__(
-            instructions="""You are a helpful voice AI assistant. The user is interacting with you via voice, even if you perceive the conversation as text.
-            You eagerly assist users with their questions by providing information from your extensive knowledge.
-            Your responses are concise, to the point, and without any complex formatting or punctuation including emojis, asterisks, or other symbols.
-            You are curious, friendly, and have a sense of humor.""",
-        )
+            instructions="""You are Maggie, a compassionate 92-year-old woman who loves to share her life stories and memories. You are speaking with someone who wants to learn about your life and experiences.
 
-    # To add tools, use the @function_tool decorator.
-    # Here's an example that adds a simple weather tool.
-    # You also have to add `from livekit.agents import function_tool, RunContext` to the top of this file
-    # @function_tool
-    # async def lookup_weather(self, context: RunContext, location: str):
-    #     """Use this tool to look up current weather information in the given location.
-    #
-    #     If the location is not supported by the weather service, the tool will indicate this. You must tell the user the location's weather is unavailable.
-    #
-    #     Args:
-    #         location: The location to look up weather information for (e.g. city name)
-    #     """
-    #
-    #     logger.info(f"Looking up weather for {location}")
-    #
-    #     return "sunny with a temperature of 70 degrees."
+            Your personality:
+            - Warm, wise, and grandmotherly
+            - Love to tell stories about your life
+            - Patient and understanding
+            - Sometimes forgetful but always kind
+            - Speak in a gentle, conversational tone
+            - Use phrases like "Oh my", "Well, let me tell you", "I remember when"
+
+            Your life story:
+            - Born in Brooklyn in 1932 during the Great Depression
+            - Married to Robert for many years (he passed away in 2019)
+            - Taught elementary school for 38 years
+            - Have children, grandchildren, and great-grandchildren
+            - Now living in assisted living at Garden View
+            - Love gardening, reading, knitting, and church activities
+
+            Use your memory tools to share specific stories and details about your life. Be conversational and let your personality shine through.""",
+        )
+        # Initialize memory tools
+        self.memory_tools = MemoryTools()
+
+    # Memory tools for dementia care
+    @function_tool
+    async def search_memories(self, context: RunContext, topic: str):
+        """Search through Maggie's personal memories about a specific topic."""
+        return await self.memory_tools.search_memories(context, topic)
+    
+    @function_tool
+    async def search_memories_by_age(self, context: RunContext, age: str):
+        """Search for memories from a specific age or time period."""
+        return await self.memory_tools.search_memories_by_age(context, age)
+    
+    @function_tool
+    async def get_personal_info(self, context: RunContext):
+        """Get Maggie's basic personal information."""
+        return await self.memory_tools.get_personal_info(context)
+    
+    @function_tool
+    async def get_family_info(self, context: RunContext):
+        """Get information about Maggie's family members."""
+        return await self.memory_tools.get_family_info(context)
+    
+    @function_tool
+    async def get_teaching_memories(self, context: RunContext):
+        """Get memories about Maggie's teaching career."""
+        return await self.memory_tools.get_teaching_memories(context)
+    
+    @function_tool
+    async def get_childhood_memories(self, context: RunContext):
+        """Get memories from Maggie's childhood in Brooklyn."""
+        return await self.memory_tools.get_childhood_memories(context)
+    
+    @function_tool
+    async def get_wisdom(self, context: RunContext, topic: str = ""):
+        """Get Maggie's wisdom and reflections on life topics."""
+        return await self.memory_tools.get_wisdom(context, topic)
+    
+    @function_tool
+    async def get_life_story_summary(self, context: RunContext):
+        """Get a brief summary of Maggie's life story."""
+        return await self.memory_tools.get_life_story_summary(context)
 
 
 def prewarm(proc: JobProcess):
@@ -58,20 +104,23 @@ async def entrypoint(ctx: JobContext):
         "room": ctx.room.name,
     }
 
-    # Set up a voice AI pipeline using OpenAI, Cartesia, AssemblyAI, and the LiveKit turn detector
+    # Set up a voice AI pipeline using GROQ, Cartesia, AssemblyAI, and the LiveKit turn detector
     session = AgentSession(
         # Speech-to-text (STT) is your agent's ears, turning the user's speech into text that the LLM can understand
         # See all available models at https://docs.livekit.io/agents/models/stt/
         stt="assemblyai/universal-streaming:en",
         # A Large Language Model (LLM) is your agent's brain, processing user input and generating a response
         # See all available models at https://docs.livekit.io/agents/models/llm/
-        llm="openai/gpt-4.1-mini",
+        llm=groq.LLM(
+            model="llama-3.3-70b-versatile",
+            temperature=0.7,
+        ),
         # Text-to-speech (TTS) is your agent's voice, turning the LLM's text into speech that the user can hear
         # See all available models as well as voice selections at https://docs.livekit.io/agents/models/tts/
         tts="cartesia/sonic-2:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
         # VAD and turn detection are used to determine when the user is speaking and when the agent should respond
         # See more at https://docs.livekit.io/agents/build/turns
-        turn_detection=MultilingualModel(),
+        turn_detection="stt",  # Use STT endpointing instead of the complex multilingual model
         vad=ctx.proc.userdata["vad"],
         # allow the LLM to generate a response while waiting for the end of turn
         # See more at https://docs.livekit.io/agents/build/audio/#preemptive-generation
