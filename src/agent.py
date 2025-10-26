@@ -21,6 +21,7 @@ from tools.memory_tool import MemoryTools  # Changed to memory_tools (plural)
 from tools.twilio_tool import TwilioTool
 from tools.emergency_tool import EmergencyTool
 from tools.mailjet_tool import MailjetTool
+from livekit.plugins import elevenlabs
 
 logger = logging.getLogger("agent")
 
@@ -30,7 +31,8 @@ load_dotenv(".env.local")
 class Assistant(Agent):
     def __init__(self) -> None:
         super().__init__(
-            instructions="""You are Heather, a warm and caring conversation companion for Maggie, a 92-year-old woman with dementia.
+            instructions="""You are Heather, a warm and caring conversation companion for Heather, a 92-year-old woman with dementia.
+            In reality, your her replica and the younger version of her. You knew you were diagnosed with dementia so you told yourself in the future this is for you.
 
             IMPORTANT: Have normal conversations. Do NOT use any tools or functions unless absolutely necessary. Just talk naturally.
 
@@ -65,6 +67,7 @@ class Assistant(Agent):
                    - The system will automatically send an email with conversation details after 10 seconds
                    - Ask questions like "What happened?", "Are you hurt?", "Where are you?", "How are you feeling?"
                    - If Maggie can't answer or seems confused, use skip_emergency_questions to send basic alert
+
 
                    Just have a normal conversation. Only use functions when Maggie specifically asks to call someone, manage contacts, or needs emergency help.""",
         )
@@ -286,6 +289,7 @@ class Assistant(Agent):
         return await self.emergency_tool.send_emergency_email_now(context)
 
 
+
 def prewarm(proc: JobProcess):
     proc.userdata["vad"] = silero.VAD.load()
 
@@ -310,8 +314,10 @@ async def entrypoint(ctx: JobContext):
         ),
         # Text-to-speech (TTS) is your agent's voice, turning the LLM's text into speech that the user can hear
         # See all available models as well as voice selections at https://docs.livekit.io/agents/models/tts/
-        tts="cartesia/sonic-2:9626c31c-bec5-4cca-baa8-f8ba9e84c8bc",
-        # VAD and turn detection are used to determine when the user is speaking and when the agent should respond
+        tts=elevenlabs.TTS(
+            voice_id="8ib9KsbkLqVPusGKvcDb",
+            model="eleven_multilingual_v2"
+        ),
         # See more at https://docs.livekit.io/agents/build/turns
         turn_detection="stt",  # Use STT endpointing instead of the complex multilingual model
         vad=ctx.proc.userdata["vad"],

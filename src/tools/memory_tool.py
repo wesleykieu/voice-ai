@@ -32,78 +32,9 @@ class MemoryTools:
                 settings=Settings(anonymized_telemetry=False, allow_reset=True),
             )
             logger.info("ChromaDB initialized successfully")
-            
-            # Load static memories from JSON file
-            self._load_static_memories()
         except Exception as e:
             logger.error(f"Error initializing ChromaDB: {e}")
             raise
-
-    def _load_static_memories(self):
-        """Load memories from the static JSON file into ChromaDB"""
-        try:
-            # Path to the static memories file
-            memories_file = os.path.join(os.path.dirname(__file__), "..", "data", "memories.json")
-            
-            if not os.path.exists(memories_file):
-                logger.info("No static memories file found")
-                return
-                
-            with open(memories_file, "r", encoding="utf-8") as f:
-                memories_data = json.load(f)
-            
-            # Get the default user collection
-            collection = self._get_collection("default_user")
-            
-            # Check if memories are already loaded
-            if collection.count() > 0:
-                logger.info("Static memories already loaded")
-                return
-            
-            # Load all memories from the JSON file
-            memory_id = 0
-            for category, memories in memories_data.items():
-                if category == "person":
-                    # Store personal info as a memory
-                    person_info = memories
-                    content = f"My name is {person_info.get('name', 'Maggie')}. I was born on {person_info.get('birth_date', 'April 15, 1932')} in {person_info.get('birth_place', 'Brooklyn, New York')}. I'm {person_info.get('current_age', 92)} years old and I was a {person_info.get('profession', 'Elementary School Teacher')}. My favorite flower is {person_info.get('favorite_flower', 'yellow roses')} and I enjoy {', '.join(person_info.get('hobbies', ['reading', 'gardening']))}."
-                    
-                    collection.add(
-                        documents=[content],
-                        metadatas=[{
-                            "category": "personal_info",
-                            "title": "About Me",
-                            "year": "1932",
-                            "added_at": datetime.now().isoformat(),
-                        }],
-                        ids=[f"static_{memory_id}"],
-                    )
-                    memory_id += 1
-                    
-                elif isinstance(memories, list):
-                    # Load all memory categories
-                    for memory in memories:
-                        if isinstance(memory, dict) and "description" in memory:
-                            content = memory["description"]
-                            title = memory.get("title", "Memory")
-                            year = memory.get("year", memory.get("age", ""))
-                            
-                            collection.add(
-                                documents=[content],
-                                metadatas=[{
-                                    "category": category,
-                                    "title": title,
-                                    "year": str(year),
-                                    "added_at": datetime.now().isoformat(),
-                                }],
-                                ids=[f"static_{memory_id}"],
-                            )
-                            memory_id += 1
-            
-            logger.info(f"Loaded {memory_id} static memories into ChromaDB")
-            
-        except Exception as e:
-            logger.error(f"Error loading static memories: {e}")
 
     def _get_user_id(self, context: RunContext) -> str:
         """Get user ID from context (room name)"""
